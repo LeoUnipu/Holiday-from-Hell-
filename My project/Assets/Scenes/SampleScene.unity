@@ -308,6 +308,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HodajNasumicno
   radiusKretanja: 3
+  vrijemePromjeneSobe: 10
+  pozicijePoSobama:
+  - {x: -3.97, y: 4.49, z: 0}
+  - {x: 0.61, y: 0.88, z: 0}
+  - {x: -3.68, y: 0.88, z: 0}
 --- !u!136 &40481947
 CapsuleCollider:
   m_ObjectHideFlags: 0
