@@ -20,7 +20,9 @@ public class VrataKlik : MonoBehaviour
             return;
         }
 
-        float udaljenost = Vector3.Distance(igrac.position, transform.position);
+        // Ovdje gledam samo udaljenost po X osi.
+        // To sprječava problem ako igrač nakon ormara ima malo drugačiji Z.
+        float udaljenost = Mathf.Abs(igrac.position.x - transform.position.x);
 
         if (udaljenost > udaljenostZaUlaz)
         {
@@ -50,6 +52,8 @@ public class VrataKlik : MonoBehaviour
         if (rb != null)
         {
             rb.position = novaPozicija;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
 
         if (mijenjaKat && kameraPratiKat != null)
