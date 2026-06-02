@@ -7,13 +7,15 @@ public class KretanjeMisem : MonoBehaviour
 
     public Animator animator;
 
-    // Ovdje povezujem Base_Mesh, odnosno vizualni model lika.
     public Transform modelLika;
+
+    [Header("Provjera prepreka")]
+    public float udaljenostProvjerePrepreke = 0.55f;
+    public float visinaProvjerePrepreke = 0.6f;
 
     private Vector3 ciljnaPozicija;
     private bool imaCilj = false;
 
-    // Ovo koristim da se ignorira samo klik kojim igrač izlazi iz ormara.
     private float ignorirajKlikDo = 0f;
 
     private Rigidbody rb;
@@ -35,7 +37,6 @@ public class KretanjeMisem : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            // Ovdje kratko ignoriram klik nakon izlaska iz ormara.
             if (Time.time < ignorirajKlikDo)
             {
                 return;
@@ -52,11 +53,11 @@ public class KretanjeMisem : MonoBehaviour
 
             foreach (RaycastHit pogodak in pogoci)
             {
-                // Ovdje koristim GetComponentInParent zato što su nova vrata možda child objekt.
                 VrataKlik vrata = pogodak.collider.GetComponentInParent<VrataKlik>();
 
                 if (vrata != null)
                 {
+                    ZaustaviKretanje();
                     vrata.Teleportiraj();
                     return;
                 }
@@ -87,6 +88,22 @@ public class KretanjeMisem : MonoBehaviour
             return;
         }
 
+        float udaljenostDoCilja = Mathf.Abs(rb.position.x - ciljnaPozicija.x);
+
+        if (udaljenostDoCilja < 0.25f)
+        {
+            ZaustaviKretanje();
+            return;
+        }
+
+        float smjerX = Mathf.Sign(ciljnaPozicija.x - rb.position.x);
+
+        if (PostojiPreprekaIspred(smjerX))
+        {
+            ZaustaviKretanje();
+            return;
+        }
+
         PostaviAnimacijuHodanja();
 
         if (modelLika != null)
@@ -108,12 +125,30 @@ public class KretanjeMisem : MonoBehaviour
         );
 
         rb.MovePosition(novaPozicija);
+    }
 
-        if (Vector3.Distance(rb.position, ciljnaPozicija) < 0.05f)
+    private bool PostojiPreprekaIspred(float smjerX)
+    {
+        Vector3 pocetakZrake = rb.position + Vector3.up * visinaProvjerePrepreke;
+        Vector3 smjer = new Vector3(smjerX, 0f, 0f);
+
+        if (Physics.Raycast(
+            pocetakZrake,
+            smjer,
+            out RaycastHit pogodak,
+            udaljenostProvjerePrepreke,
+            ~0,
+            QueryTriggerInteraction.Ignore))
         {
-            imaCilj = false;
-            PostaviAnimacijuStajanja();
+            if (pogodak.collider.transform.IsChildOf(transform))
+            {
+                return false;
+            }
+
+            return true;
         }
+
+        return false;
     }
 
     public void ZaustaviKretanje()

@@ -5,12 +5,14 @@ using System.Collections;
 public class PostaviSapun : MonoBehaviour
 {
     public Transform igrac;
-    public GameObject sapunZamka;
 
-    public float udaljenostZaPostavljanje = 1.5f;
+    [Header("Sapun zamka")]
+    public GameObject sapunZamka;
+    public float udaljenostZaPostavljanje = 2f;
     public float vrijemePostavljanja = 3f;
 
-    public TextMeshPro timerTekst;
+    [Header("Timer")]
+    public TMP_Text timerTekst;
 
     private bool postavljeno = false;
     private bool postavljaSe = false;
@@ -27,30 +29,44 @@ public class PostaviSapun : MonoBehaviour
         {
             timerTekst.gameObject.SetActive(false);
         }
+
+        if (sapunZamka != null)
+        {
+            sapunZamka.SetActive(false);
+        }
     }
 
     private void OnMouseDown()
     {
-        if (postavljeno) return;
-        if (postavljaSe) return;
+        if (postavljeno || postavljaSe) return;
+
+        if (igrac == null) return;
 
         float udaljenost = Vector3.Distance(igrac.position, transform.position);
 
-        if (udaljenost <= udaljenostZaPostavljanje)
+        if (udaljenost > udaljenostZaPostavljanje)
         {
-            StartCoroutine(PostaviZamkuNakonVremena());
+            Debug.Log("Igrač je predaleko od mjesta za postavljanje sapuna.");
+            return;
         }
-        else
+
+        InventoryIgraca inventory = igrac.GetComponent<InventoryIgraca>();
+
+        if (inventory == null) return;
+
+        if (!inventory.ImaPredmet("Sapun"))
         {
-            Debug.Log("Igrač je predaleko od mjesta za sapun.");
+            Debug.Log("Nemaš sapun u inventoryju.");
+            return;
         }
+
+        StartCoroutine(PostaviZamkuNakonVremena(inventory));
     }
 
-    private IEnumerator PostaviZamkuNakonVremena()
+    private IEnumerator PostaviZamkuNakonVremena(InventoryIgraca inventory)
     {
         postavljaSe = true;
 
-        // Ovdje zaustavljam igrača dok postavlja zamku.
         if (kretanjeIgraca != null)
         {
             kretanjeIgraca.ZaustaviKretanje();
@@ -81,7 +97,12 @@ public class PostaviSapun : MonoBehaviour
             yield return null;
         }
 
-        sapunZamka.SetActive(true);
+        if (sapunZamka != null)
+        {
+            sapunZamka.SetActive(true);
+        }
+
+        inventory.UkloniPredmet("Sapun");
 
         if (timerTekst != null)
         {
@@ -90,16 +111,16 @@ public class PostaviSapun : MonoBehaviour
             timerTekst.gameObject.SetActive(false);
         }
 
-        // Ovdje vraćam kretanje nakon što se zamka postavi.
         if (kretanjeIgraca != null)
         {
             kretanjeIgraca.enabled = true;
             kretanjeIgraca.ZaustaviKretanje();
+            kretanjeIgraca.IgnorirajSljedeciKlik();
         }
 
         postavljeno = true;
         postavljaSe = false;
 
-        Debug.Log("Sapun je postavljen!");
+        Debug.Log("Sapun je postavljen kao zamka.");
     }
 }
