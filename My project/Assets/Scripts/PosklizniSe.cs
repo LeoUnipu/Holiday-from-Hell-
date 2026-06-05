@@ -7,7 +7,21 @@ public class PosklizniSe : MonoBehaviour
         if (other.CompareTag("NPC"))
         {
             ScoreManager.instance.DodajBod();
-            Debug.Log("NPC se poskliznu! +1 bod");
+            HodajNasumicno hodanje = other.GetComponent<HodajNasumicno>();
+            if (hodanje != null)
+                foreach (Animator anim in hodanje.npcAnimatori)
+                    anim.SetBool("isSlipping", true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("NPC"))
+        {
+            HodajNasumicno hodanje = other.GetComponent<HodajNasumicno>();
+            if (hodanje != null)
+                foreach (Animator anim in hodanje.npcAnimatori)
+                    anim.SetBool("isSlipping", false);
         }
     }
 }
