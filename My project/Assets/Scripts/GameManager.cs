@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
 
     private float vrijemePreostalo = 300f; // 5 minuta
     private bool gameAktivan = true;
+    public AudioSource audioSource;
+    public AudioClip gameOverZvuk;
+    public AudioClip levelCompleteZvuk;
 
     void Update()
     {
@@ -23,28 +26,30 @@ public class GameManager : MonoBehaviour
         timerTekst.text = string.Format("{0:00}:{1:00}", minute, sekunde);
 
         // Igrač je preživio 5 minuta
-        if (vrijemePreostalo <= 0)
-        {
-            vrijemePreostalo = 0;
-            LevelComplete();
-        }
+        if (vrijemePreostalo <= 0 || ScoreManager.instance.score >= 20)
+{
+    vrijemePreostalo = 0;
+    LevelComplete();
+}
     }
 
     public void GameOver()
-    {
-        gameAktivan = false;
-        if (gameOverPanel != null)
-            gameOverPanel.SetActive(true);
-        Time.timeScale = 0f;
-    }
+{
+    gameAktivan = false;
+    if (gameOverPanel != null)
+        gameOverPanel.SetActive(true);
+    audioSource.PlayOneShot(gameOverZvuk); // NOVO
+    Time.timeScale = 0f;
+}
 
     public void LevelComplete()
-    {
-        gameAktivan = false;
-        if (levelCompletePanel != null)
-            levelCompletePanel.SetActive(true);
-        Time.timeScale = 0f;
-    }
+{
+    gameAktivan = false;
+    if (levelCompletePanel != null)
+        levelCompletePanel.SetActive(true);
+    audioSource.PlayOneShot(levelCompleteZvuk); // NOVO
+    Time.timeScale = 0f;
+}
 
     public void RestartLevel()
     {
