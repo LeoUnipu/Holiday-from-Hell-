@@ -7,6 +7,7 @@ public class InventoryIgraca : MonoBehaviour
 
     [Header("Inventory UI")]
     public GameObject ikonaSapuna;
+    public GameObject ikonaJajeta;
 
     private void Start()
     {
@@ -45,6 +46,11 @@ public class InventoryIgraca : MonoBehaviour
         if (ikonaSapuna != null)
         {
             ikonaSapuna.SetActive(ImaPredmet("Sapun"));
+        }
+
+        if (ikonaJajeta != null)
+        {
+            ikonaJajeta.SetActive(ImaPredmet("Jaje"));
         }
     }
 }

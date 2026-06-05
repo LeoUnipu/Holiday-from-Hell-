@@ -2,12 +2,12 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
-public class PostaviSapun : MonoBehaviour
+public class PostaviJaje : MonoBehaviour
 {
     public Transform igrac;
 
-    [Header("Sapun zamka")]
-    public GameObject sapunZamka;
+    [Header("Jaje zamka")]
+    public GameObject jajeUMikrovalnoj;
     public float udaljenostZaPostavljanje = 2f;
     public float vrijemePostavljanja = 3f;
 
@@ -41,9 +41,9 @@ public class PostaviSapun : MonoBehaviour
             timerTekst.gameObject.SetActive(false);
         }
 
-        if (sapunZamka != null)
+        if (jajeUMikrovalnoj != null)
         {
-            sapunZamka.SetActive(false);
+            jajeUMikrovalnoj.SetActive(false);
         }
     }
 
@@ -57,7 +57,7 @@ public class PostaviSapun : MonoBehaviour
 
         if (udaljenost > udaljenostZaPostavljanje)
         {
-            Debug.Log("Igrač je predaleko od mjesta za postavljanje sapuna.");
+            Debug.Log("Igrač je predaleko od mikrovalne.");
             return;
         }
 
@@ -65,16 +65,16 @@ public class PostaviSapun : MonoBehaviour
 
         if (inventory == null) return;
 
-        if (!inventory.ImaPredmet("Sapun"))
+        if (!inventory.ImaPredmet("Jaje"))
         {
-            Debug.Log("Nemaš sapun u inventoryju.");
+            Debug.Log("Nemaš jaje u inventoryju.");
             return;
         }
 
-        StartCoroutine(PostaviZamkuNakonVremena(inventory));
+        StartCoroutine(PostaviJajeNakonVremena(inventory));
     }
 
-    private IEnumerator PostaviZamkuNakonVremena(InventoryIgraca inventory)
+    private IEnumerator PostaviJajeNakonVremena(InventoryIgraca inventory)
     {
         postavljaSe = true;
 
@@ -118,12 +118,12 @@ public class PostaviSapun : MonoBehaviour
 
         ZaustaviZvukTajmera();
 
-        if (sapunZamka != null)
+        if (jajeUMikrovalnoj != null)
         {
-            sapunZamka.SetActive(true);
+            jajeUMikrovalnoj.SetActive(true);
         }
 
-        inventory.UkloniPredmet("Sapun");
+        inventory.UkloniPredmet("Jaje");
 
         PustiZvukPostavljeno();
 
@@ -144,7 +144,7 @@ public class PostaviSapun : MonoBehaviour
         postavljeno = true;
         postavljaSe = false;
 
-        Debug.Log("Sapun je postavljen kao zamka.");
+        Debug.Log("Jaje je postavljeno u mikrovalnu.");
     }
 
     private void PrekiniPostavljanje()
@@ -166,7 +166,7 @@ public class PostaviSapun : MonoBehaviour
 
         postavljaSe = false;
 
-        Debug.Log("Postavljanje sapuna je prekinuto.");
+        Debug.Log("Postavljanje jajeta je prekinuto.");
     }
 
     private void PokreniZvukTajmera()

@@ -13,6 +13,10 @@ public class KretanjeMisem : MonoBehaviour
     public float udaljenostProvjerePrepreke = 0.55f;
     public float visinaProvjerePrepreke = 0.6f;
 
+    [Header("Zvuk hodanja")]
+    public AudioSource audioHodanja;
+    public AudioClip zvukHodanja;
+
     private Vector3 ciljnaPozicija;
     private bool imaCilj = false;
 
@@ -29,8 +33,14 @@ public class KretanjeMisem : MonoBehaviour
             glavnaKamera = Camera.main;
         }
 
+        if (audioHodanja == null)
+        {
+            audioHodanja = GetComponent<AudioSource>();
+        }
+
         ciljnaPozicija = transform.position;
         PostaviAnimacijuStajanja();
+        ZaustaviZvukHodanja();
     }
 
     void Update()
@@ -85,6 +95,7 @@ public class KretanjeMisem : MonoBehaviour
         if (!imaCilj)
         {
             PostaviAnimacijuStajanja();
+            ZaustaviZvukHodanja();
             return;
         }
 
@@ -105,6 +116,7 @@ public class KretanjeMisem : MonoBehaviour
         }
 
         PostaviAnimacijuHodanja();
+        PokreniZvukHodanja();
 
         if (modelLika != null)
         {
@@ -156,6 +168,7 @@ public class KretanjeMisem : MonoBehaviour
         imaCilj = false;
         ciljnaPozicija = transform.position;
         PostaviAnimacijuStajanja();
+        ZaustaviZvukHodanja();
 
         if (rb != null)
         {
@@ -167,6 +180,28 @@ public class KretanjeMisem : MonoBehaviour
     public void IgnorirajSljedeciKlik()
     {
         ignorirajKlikDo = Time.time + 0.15f;
+    }
+
+    private void PokreniZvukHodanja()
+    {
+        if (audioHodanja == null || zvukHodanja == null) return;
+
+        if (!audioHodanja.isPlaying)
+        {
+            audioHodanja.clip = zvukHodanja;
+            audioHodanja.loop = true;
+            audioHodanja.Play();
+        }
+    }
+
+    private void ZaustaviZvukHodanja()
+    {
+        if (audioHodanja == null) return;
+
+        if (audioHodanja.isPlaying)
+        {
+            audioHodanja.Stop();
+        }
     }
 
     private void PostaviAnimacijuHodanja()

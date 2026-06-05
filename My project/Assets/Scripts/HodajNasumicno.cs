@@ -9,10 +9,17 @@ public class HodajNasumicno : MonoBehaviour
 
     private NavMeshAgent agent;
     private float timer = 0f;
+    private Animator animator;
+    public Animator[] npcAnimatori;
+
+    public float pocetnaBrzina = 1f;
+    public float maksimalnaBrzina = 4f;
+    public float povecanjeBrzine = 0.1f;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>(true);
         IdiNaNovuPoziciju();
     }
 
@@ -27,6 +34,9 @@ public class HodajNasumicno : MonoBehaviour
             timer = 0f;
             TeleportirajUSobu();
         }
+       animator.SetBool("isWalking", true);
+       if (agent.speed < maksimalnaBrzina)
+    agent.speed += povecanjeBrzine * Time.deltaTime;
     }
 
     void TeleportirajUSobu()

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PokupiSapun : MonoBehaviour
+public class PokupiJaje : MonoBehaviour
 {
     public Transform igrac;
     public float udaljenostZaSkupljanje = 2f;
@@ -17,7 +17,7 @@ public class PokupiSapun : MonoBehaviour
 
         if (udaljenost > udaljenostZaSkupljanje)
         {
-            Debug.Log("Igrač je predaleko od sapuna.");
+            Debug.Log("Igrač je predaleko od jajeta.");
             return;
         }
 
@@ -25,7 +25,7 @@ public class PokupiSapun : MonoBehaviour
 
         if (inventory != null)
         {
-            inventory.DodajPredmet("Sapun");
+            inventory.DodajPredmet("Jaje");
 
             if (zvukSkupljanja != null)
             {
@@ -38,7 +38,7 @@ public class PokupiSapun : MonoBehaviour
 
             gameObject.SetActive(false);
 
-            Debug.Log("Igrač je pokupio sapun.");
+            Debug.Log("Igrač je pokupio jaje.");
         }
     }
 }
