@@ -20,7 +20,7 @@ public class PostaviJaje : MonoBehaviour
     public AudioClip zvukPostavljeno;
     public float jacinaZvuka = 1f;
 
-    private bool postavljeno = false;
+    public bool postavljeno = false;
     private bool postavljaSe = false;
 
     private KretanjeMisem kretanjeIgraca;

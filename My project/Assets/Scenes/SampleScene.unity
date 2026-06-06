@@ -4541,6 +4541,7 @@ GameObject:
   - component: {fileID: 1029919888}
   - component: {fileID: 1029919886}
   - component: {fileID: 1029919892}
+  - component: {fileID: 1029919893}
   m_Layer: 0
   m_Name: MjestoZaJaje
   m_TagString: Untagged
@@ -4759,6 +4760,22 @@ MonoBehaviour:
   zvukTajmera: {fileID: 8300000, guid: 4cbd56955ec7d664ea6c5b9447cf1fe5, type: 3}
   zvukPostavljeno: {fileID: 8300000, guid: ea1a9620a3a702645a5901c8facd4209, type: 3}
   jacinaZvuka: 1
+  postavljeno: 0
+--- !u!114 &1029919893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1029919885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13959ef9742332e49b1e568e4a1d1aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MikrovalnaTrigger
+  audioSource: {fileID: 1029919886}
+  mikrovalnaZvuk: {fileID: 8300000, guid: 2c5292ba5cf254919a6b9e2b18e04f49, type: 3}
+  postaviJaje: {fileID: 1029919892}
 --- !u!1 &1057401639
 GameObject:
   m_ObjectHideFlags: 0
