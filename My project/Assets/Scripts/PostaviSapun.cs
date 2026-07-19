@@ -4,12 +4,28 @@ using System.Collections;
 
 public class PostaviSapun : MonoBehaviour
 {
+    [Header("Igrač")]
     public Transform igrac;
 
     [Header("Sapun zamka")]
     public GameObject sapunZamka;
     public float udaljenostZaPostavljanje = 2f;
-    public float vrijemePostavljanja = 3f;
+
+    [Header("Animacija")]
+    [Tooltip("Animator koji izvodi animaciju postavljanja.")]
+    public Animator animatorIgraca;
+
+    [Tooltip("Točan naziv Idle stanja u Animatoru.")]
+    public string idleStateName = "Idle";
+
+    [Tooltip("1 = normalno, 1.5 = brže, 2 = dvostruko brže.")]
+    public float brzinaAnimacije = 1.5f;
+
+    [Tooltip("Ukupno trajanje odbrojavanja.")]
+    public float ukupnoTrajanjePostavljanja = 5f;
+
+    [Tooltip("Najduže čekanje povratka u Idle.")]
+    public float maksimalnoCekanjeIdle = 10f;
 
     [Header("Timer")]
     public TMP_Text timerTekst;
@@ -24,12 +40,32 @@ public class PostaviSapun : MonoBehaviour
     private bool postavljaSe = false;
 
     private KretanjeMisem kretanjeIgraca;
+    private AnimacijeInterakcije animacije;
     private Rigidbody rb;
+
+    private Coroutine postavljanjeCoroutine;
+
+    private float originalnaBrzinaAnimatora = 1f;
 
     private void Start()
     {
-        kretanjeIgraca = igrac.GetComponent<KretanjeMisem>();
-        rb = igrac.GetComponent<Rigidbody>();
+        if (igrac != null)
+        {
+            kretanjeIgraca =
+                igrac.GetComponent<KretanjeMisem>();
+
+            animacije =
+                igrac.GetComponentInChildren<AnimacijeInterakcije>(true);
+
+            rb =
+                igrac.GetComponent<Rigidbody>();
+
+            if (animatorIgraca == null)
+            {
+                animatorIgraca =
+                    igrac.GetComponentInChildren<Animator>(true);
+            }
+        }
 
         if (audioSource == null)
         {
@@ -47,48 +83,136 @@ public class PostaviSapun : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (!postavljaSe)
+        {
+            return;
+        }
+
+        DrziIgracaZakljucanog();
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            PrekiniPostavljanje();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!postavljaSe)
+        {
+            return;
+        }
+
+        ZaustaviRigidbody();
+    }
+
+    private void LateUpdate()
+    {
+        if (!postavljaSe)
+        {
+            return;
+        }
+
+        ZaustaviRigidbody();
+    }
+
     private void OnMouseDown()
     {
-        if (postavljeno || postavljaSe) return;
+        if (postavljaSe || postavljeno)
+        {
+            return;
+        }
 
-        if (igrac == null) return;
+        if (igrac == null)
+        {
+            Debug.LogWarning(
+                "Igrač nije postavljen u PostaviSapun skripti."
+            );
 
-        float udaljenost = Vector3.Distance(igrac.position, transform.position);
+            return;
+        }
+
+        float udaljenost = Vector3.Distance(
+            igrac.position,
+            transform.position
+        );
 
         if (udaljenost > udaljenostZaPostavljanje)
         {
-            Debug.Log("Igrač je predaleko od mjesta za postavljanje sapuna.");
+            Debug.Log(
+                "Igrač je predaleko od mjesta za postavljanje sapuna."
+            );
+
             return;
         }
 
-        InventoryIgraca inventory = igrac.GetComponent<InventoryIgraca>();
+        InventoryIgraca inventory =
+            igrac.GetComponent<InventoryIgraca>();
 
-        if (inventory == null) return;
+        if (inventory == null)
+        {
+            Debug.LogWarning(
+                "InventoryIgraca nije pronađen na igraču."
+            );
+
+            return;
+        }
 
         if (!inventory.ImaPredmet("Sapun"))
         {
-            Debug.Log("Nemaš sapun u inventoryju.");
+            Debug.Log(
+                "Nemaš sapun u inventoryju."
+            );
+
             return;
         }
 
-        StartCoroutine(PostaviZamkuNakonVremena(inventory));
+        if (animacije == null)
+        {
+            Debug.LogWarning(
+                "AnimacijeInterakcije nije pronađena."
+            );
+
+            return;
+        }
+
+        if (animacije.JeLiAnimacijaUTijeku())
+        {
+            return;
+        }
+
+        postavljanjeCoroutine = StartCoroutine(
+            PostaviSapunNakonAnimacije(inventory)
+        );
     }
 
-    private IEnumerator PostaviZamkuNakonVremena(InventoryIgraca inventory)
+    private IEnumerator PostaviSapunNakonAnimacije(
+        InventoryIgraca inventory)
     {
         postavljaSe = true;
 
-        if (kretanjeIgraca != null)
+        ZakljucajKretanje();
+        OkreniIgracaPremaMjestu();
+
+        yield return null;
+
+        DrziIgracaZakljucanog();
+
+        float sigurnaBrzinaAnimacije =
+            Mathf.Max(0.1f, brzinaAnimacije);
+
+        if (animatorIgraca != null)
         {
-            kretanjeIgraca.ZaustaviKretanje();
-            kretanjeIgraca.enabled = false;
+            originalnaBrzinaAnimatora =
+                animatorIgraca.speed;
+
+            animatorIgraca.speed =
+                sigurnaBrzinaAnimacije;
         }
 
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+        animacije.PokreniPostavljanjeNisko();
 
         if (timerTekst != null)
         {
@@ -97,26 +221,68 @@ public class PostaviSapun : MonoBehaviour
 
         PokreniZvukTajmera();
 
-        float preostaloVrijeme = vrijemePostavljanja;
+        float preostaloVrijeme =
+            Mathf.Max(
+                0.1f,
+                ukupnoTrajanjePostavljanja
+            );
 
-        while (preostaloVrijeme > 0)
+        while (preostaloVrijeme > 0f)
         {
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
+            if (!postavljaSe)
             {
-                PrekiniPostavljanje();
                 yield break;
             }
 
-            if (timerTekst != null)
-            {
-                timerTekst.text = Mathf.Ceil(preostaloVrijeme).ToString();
-            }
+            DrziIgracaZakljucanog();
 
             preostaloVrijeme -= Time.deltaTime;
+
+            if (timerTekst != null)
+            {
+                timerTekst.text =
+                    Mathf.CeilToInt(
+                        Mathf.Max(
+                            0f,
+                            preostaloVrijeme
+                        )
+                    ).ToString();
+
+                timerTekst.ForceMeshUpdate();
+            }
+
             yield return null;
         }
 
+        while (animacije.JeLiAnimacijaUTijeku())
+        {
+            if (!postavljaSe)
+            {
+                yield break;
+            }
+
+            DrziIgracaZakljucanog();
+
+            yield return null;
+        }
+
+        yield return StartCoroutine(
+            CekajPotpuniPovratakUIdle()
+        );
+
+        VratiBrzinuAnimatora();
         ZaustaviZvukTajmera();
+
+        if (!postavljaSe)
+        {
+            yield break;
+        }
+
+        if (animacije.JeLiZadnjaAnimacijaPrekinuta())
+        {
+            PrekiniPostavljanje();
+            yield break;
+        }
 
         if (sapunZamka != null)
         {
@@ -130,9 +296,131 @@ public class PostaviSapun : MonoBehaviour
         if (timerTekst != null)
         {
             timerTekst.text = "OK";
-            yield return new WaitForSeconds(0.5f);
+            timerTekst.ForceMeshUpdate();
+
+            float vrijemeZaOK = 0.5f;
+
+            while (vrijemeZaOK > 0f)
+            {
+                if (!postavljaSe)
+                {
+                    yield break;
+                }
+
+                DrziIgracaZakljucanog();
+
+                vrijemeZaOK -= Time.deltaTime;
+
+                yield return null;
+            }
+
             timerTekst.gameObject.SetActive(false);
         }
+
+        postavljeno = true;
+        postavljaSe = false;
+        postavljanjeCoroutine = null;
+
+        OtkljucajKretanje();
+
+        PromijeniKursor kursor =
+            GetComponent<PromijeniKursor>();
+
+        if (kursor != null)
+        {
+            kursor.IskljuciInterakciju();
+        }
+
+        Debug.Log(
+            "Sapun je postavljen kao zamka."
+        );
+    }
+
+    private IEnumerator CekajPotpuniPovratakUIdle()
+    {
+        if (animatorIgraca == null)
+        {
+            yield break;
+        }
+
+        yield return null;
+
+        float timer = 0f;
+
+        while (timer < maksimalnoCekanjeIdle)
+        {
+            if (!postavljaSe)
+            {
+                yield break;
+            }
+
+            DrziIgracaZakljucanog();
+
+            AnimatorStateInfo trenutnoStanje =
+                animatorIgraca.GetCurrentAnimatorStateInfo(0);
+
+            bool animatorJeUPrijelazu =
+                animatorIgraca.IsInTransition(0);
+
+            bool animatorJeUIdle =
+                trenutnoStanje.IsName(idleStateName);
+
+            if (!animatorJeUPrijelazu &&
+                animatorJeUIdle)
+            {
+                yield break;
+            }
+
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+
+        Debug.LogWarning(
+            "Animator se nije vratio u stanje: " +
+            idleStateName
+        );
+    }
+
+    private void ZakljucajKretanje()
+    {
+        if (kretanjeIgraca != null)
+        {
+            kretanjeIgraca.ZaustaviKretanje();
+            kretanjeIgraca.enabled = false;
+        }
+
+        ZaustaviRigidbody();
+    }
+
+    private void DrziIgracaZakljucanog()
+    {
+        if (kretanjeIgraca != null)
+        {
+            if (kretanjeIgraca.enabled)
+            {
+                kretanjeIgraca.ZaustaviKretanje();
+                kretanjeIgraca.enabled = false;
+            }
+        }
+
+        ZaustaviRigidbody();
+    }
+
+    private void ZaustaviRigidbody()
+    {
+        if (rb == null)
+        {
+            return;
+        }
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+    }
+
+    private void OtkljucajKretanje()
+    {
+        ZaustaviRigidbody();
 
         if (kretanjeIgraca != null)
         {
@@ -140,16 +428,68 @@ public class PostaviSapun : MonoBehaviour
             kretanjeIgraca.ZaustaviKretanje();
             kretanjeIgraca.IgnorirajSljedeciKlik();
         }
+    }
 
-        postavljeno = true;
-        postavljaSe = false;
+    private void VratiBrzinuAnimatora()
+    {
+        if (animatorIgraca != null)
+        {
+            animatorIgraca.speed =
+                originalnaBrzinaAnimatora;
+        }
+    }
 
-        Debug.Log("Sapun je postavljen kao zamka.");
+    private void OkreniIgracaPremaMjestu()
+    {
+        if (kretanjeIgraca == null ||
+            kretanjeIgraca.modelLika == null)
+        {
+            return;
+        }
+
+        if (transform.position.x > igrac.position.x)
+        {
+            kretanjeIgraca.modelLika.localRotation =
+                Quaternion.Euler(
+                    0f,
+                    84.79f,
+                    0f
+                );
+        }
+        else
+        {
+            kretanjeIgraca.modelLika.localRotation =
+                Quaternion.Euler(
+                    0f,
+                    264.79f,
+                    0f
+                );
+        }
     }
 
     private void PrekiniPostavljanje()
     {
+        if (!postavljaSe)
+        {
+            return;
+        }
+
+        postavljaSe = false;
+
+        if (postavljanjeCoroutine != null)
+        {
+            StopCoroutine(postavljanjeCoroutine);
+            postavljanjeCoroutine = null;
+        }
+
+        VratiBrzinuAnimatora();
         ZaustaviZvukTajmera();
+
+        if (animacije != null &&
+            animacije.JeLiAnimacijaUTijeku())
+        {
+            animacije.PrekiniTrenutnuAnimaciju();
+        }
 
         if (timerTekst != null)
         {
@@ -157,21 +497,20 @@ public class PostaviSapun : MonoBehaviour
             timerTekst.gameObject.SetActive(false);
         }
 
-        if (kretanjeIgraca != null)
-        {
-            kretanjeIgraca.enabled = true;
-            kretanjeIgraca.ZaustaviKretanje();
-            kretanjeIgraca.IgnorirajSljedeciKlik();
-        }
+        OtkljucajKretanje();
 
-        postavljaSe = false;
-
-        Debug.Log("Postavljanje sapuna je prekinuto.");
+        Debug.Log(
+            "Postavljanje sapuna je prekinuto desnim klikom."
+        );
     }
 
     private void PokreniZvukTajmera()
     {
-        if (audioSource == null || zvukTajmera == null) return;
+        if (audioSource == null ||
+            zvukTajmera == null)
+        {
+            return;
+        }
 
         audioSource.clip = zvukTajmera;
         audioSource.loop = true;
@@ -181,7 +520,10 @@ public class PostaviSapun : MonoBehaviour
 
     private void ZaustaviZvukTajmera()
     {
-        if (audioSource == null) return;
+        if (audioSource == null)
+        {
+            return;
+        }
 
         if (audioSource.isPlaying)
         {
@@ -193,12 +535,27 @@ public class PostaviSapun : MonoBehaviour
 
     private void PustiZvukPostavljeno()
     {
-        if (zvukPostavljeno == null) return;
+        if (zvukPostavljeno == null ||
+            Camera.main == null)
+        {
+            return;
+        }
 
         AudioSource.PlayClipAtPoint(
             zvukPostavljeno,
             Camera.main.transform.position,
             jacinaZvuka
         );
+    }
+
+    private void OnDisable()
+    {
+        VratiBrzinuAnimatora();
+
+        if (postavljaSe)
+        {
+            postavljaSe = false;
+            OtkljucajKretanje();
+        }
     }
 }

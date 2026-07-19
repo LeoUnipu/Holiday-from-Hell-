@@ -6,12 +6,12 @@ public class KretanjeMisem : MonoBehaviour
     public Camera glavnaKamera;
 
     public Animator animator;
-
     public Transform modelLika;
 
     [Header("Provjera prepreka")]
     public float udaljenostProvjerePrepreke = 0.55f;
     public float visinaProvjerePrepreke = 0.6f;
+    public float radijusProvjerePrepreke = 0.25f;
 
     [Header("Zvuk hodanja")]
     public AudioSource audioHodanja;
@@ -24,7 +24,7 @@ public class KretanjeMisem : MonoBehaviour
 
     private Rigidbody rb;
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
 
@@ -39,59 +39,76 @@ public class KretanjeMisem : MonoBehaviour
         }
 
         ciljnaPozicija = transform.position;
+
         PostaviAnimacijuStajanja();
         ZaustaviZvukHodanja();
     }
 
-    void Update()
+    private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!Input.GetMouseButtonDown(0))
         {
-            if (Time.time < ignorirajKlikDo)
+            return;
+        }
+
+        if (Time.time < ignorirajKlikDo)
+        {
+            return;
+        }
+
+        if (glavnaKamera == null)
+        {
+            return;
+        }
+
+        Ray zraka =
+            glavnaKamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(
+            zraka,
+            out RaycastHit prviPogodak,
+            100f,
+            ~0,
+            QueryTriggerInteraction.Collide))
+        {
+            VrataKlik vrata =
+                prviPogodak.collider.GetComponentInParent<VrataKlik>();
+
+            if (vrata != null)
             {
+                ZaustaviKretanje();
+                vrata.Teleportiraj();
                 return;
             }
+        }
 
-            Ray zraka = glavnaKamera.ScreenPointToRay(Input.mousePosition);
+        Plane ravninaKretanja =
+            new Plane(Vector3.forward, transform.position);
 
-            RaycastHit[] pogoci = Physics.RaycastAll(
-                zraka,
-                100f,
-                ~0,
-                QueryTriggerInteraction.Collide
+        if (ravninaKretanja.Raycast(
+            zraka,
+            out float udaljenost))
+        {
+            Vector3 klikPozicija =
+                zraka.GetPoint(udaljenost);
+
+            ciljnaPozicija = new Vector3(
+                klikPozicija.x,
+                transform.position.y,
+                transform.position.z
             );
 
-            foreach (RaycastHit pogodak in pogoci)
-            {
-                VrataKlik vrata = pogodak.collider.GetComponentInParent<VrataKlik>();
-
-                if (vrata != null)
-                {
-                    ZaustaviKretanje();
-                    vrata.Teleportiraj();
-                    return;
-                }
-            }
-
-            Plane ravninaKretanja = new Plane(Vector3.forward, transform.position);
-
-            if (ravninaKretanja.Raycast(zraka, out float udaljenost))
-            {
-                Vector3 klikPozicija = zraka.GetPoint(udaljenost);
-
-                ciljnaPozicija = new Vector3(
-                    klikPozicija.x,
-                    transform.position.y,
-                    transform.position.z
-                );
-
-                imaCilj = true;
-            }
+            imaCilj = true;
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
+        if (rb == null)
+        {
+            return;
+        }
+
         if (!imaCilj)
         {
             PostaviAnimacijuStajanja();
@@ -99,7 +116,8 @@ public class KretanjeMisem : MonoBehaviour
             return;
         }
 
-        float udaljenostDoCilja = Mathf.Abs(rb.position.x - ciljnaPozicija.x);
+        float udaljenostDoCilja =
+            Mathf.Abs(rb.position.x - ciljnaPozicija.x);
 
         if (udaljenostDoCilja < 0.25f)
         {
@@ -107,7 +125,8 @@ public class KretanjeMisem : MonoBehaviour
             return;
         }
 
-        float smjerX = Mathf.Sign(ciljnaPozicija.x - rb.position.x);
+        float smjerX =
+            Mathf.Sign(ciljnaPozicija.x - rb.position.x);
 
         if (PostojiPreprekaIspred(smjerX))
         {
@@ -120,13 +139,15 @@ public class KretanjeMisem : MonoBehaviour
 
         if (modelLika != null)
         {
-            if (ciljnaPozicija.x > transform.position.x)
+            if (smjerX > 0f)
             {
-                modelLika.localRotation = Quaternion.Euler(0f, 84.79f, 0f);
+                modelLika.localRotation =
+                    Quaternion.Euler(0f, 84.79f, 0f);
             }
-            else if (ciljnaPozicija.x < transform.position.x)
+            else if (smjerX < 0f)
             {
-                modelLika.localRotation = Quaternion.Euler(0f, 264.79f, 0f);
+                modelLika.localRotation =
+                    Quaternion.Euler(0f, 264.79f, 0f);
             }
         }
 
@@ -141,21 +162,50 @@ public class KretanjeMisem : MonoBehaviour
 
     private bool PostojiPreprekaIspred(float smjerX)
     {
-        Vector3 pocetakZrake = rb.position + Vector3.up * visinaProvjerePrepreke;
-        Vector3 smjer = new Vector3(smjerX, 0f, 0f);
+        Vector3 pocetak =
+            rb.position + Vector3.up * visinaProvjerePrepreke;
 
-        if (Physics.Raycast(
-            pocetakZrake,
+        Vector3 smjer =
+            new Vector3(smjerX, 0f, 0f);
+
+        RaycastHit[] pogoci = Physics.SphereCastAll(
+            pocetak,
+            radijusProvjerePrepreke,
             smjer,
-            out RaycastHit pogodak,
             udaljenostProvjerePrepreke,
             ~0,
-            QueryTriggerInteraction.Ignore))
+            QueryTriggerInteraction.Ignore
+        );
+
+        foreach (RaycastHit pogodak in pogoci)
         {
-            if (pogodak.collider.transform.IsChildOf(transform))
+            if (pogodak.collider == null)
             {
-                return false;
+                continue;
             }
+
+            Transform pogodeniObjekt =
+                pogodak.collider.transform;
+
+            if (pogodeniObjekt == transform)
+            {
+                continue;
+            }
+
+            if (pogodeniObjekt.IsChildOf(transform))
+            {
+                continue;
+            }
+
+            if (transform.IsChildOf(pogodeniObjekt))
+            {
+                continue;
+            }
+
+            Debug.Log(
+                "Prepreka ispred igrača: " +
+                pogodak.collider.name
+            );
 
             return true;
         }
@@ -166,15 +216,21 @@ public class KretanjeMisem : MonoBehaviour
     public void ZaustaviKretanje()
     {
         imaCilj = false;
-        ciljnaPozicija = transform.position;
-        PostaviAnimacijuStajanja();
-        ZaustaviZvukHodanja();
 
         if (rb != null)
         {
+            ciljnaPozicija = rb.position;
+
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
+        else
+        {
+            ciljnaPozicija = transform.position;
+        }
+
+        PostaviAnimacijuStajanja();
+        ZaustaviZvukHodanja();
     }
 
     public void IgnorirajSljedeciKlik()
@@ -184,7 +240,11 @@ public class KretanjeMisem : MonoBehaviour
 
     private void PokreniZvukHodanja()
     {
-        if (audioHodanja == null || zvukHodanja == null) return;
+        if (audioHodanja == null ||
+            zvukHodanja == null)
+        {
+            return;
+        }
 
         if (!audioHodanja.isPlaying)
         {
@@ -196,7 +256,10 @@ public class KretanjeMisem : MonoBehaviour
 
     private void ZaustaviZvukHodanja()
     {
-        if (audioHodanja == null) return;
+        if (audioHodanja == null)
+        {
+            return;
+        }
 
         if (audioHodanja.isPlaying)
         {
@@ -206,7 +269,10 @@ public class KretanjeMisem : MonoBehaviour
 
     private void PostaviAnimacijuHodanja()
     {
-        if (animator == null) return;
+        if (animator == null)
+        {
+            return;
+        }
 
         animator.SetFloat("State", 0f);
         animator.SetFloat("Hor", 0f);
@@ -215,7 +281,10 @@ public class KretanjeMisem : MonoBehaviour
 
     private void PostaviAnimacijuStajanja()
     {
-        if (animator == null) return;
+        if (animator == null)
+        {
+            return;
+        }
 
         animator.SetFloat("State", 0f);
         animator.SetFloat("Hor", 0f);

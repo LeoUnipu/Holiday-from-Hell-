@@ -20,8 +20,7 @@ public class VrataKlik : MonoBehaviour
             return;
         }
 
-        // Ovdje gledam samo udaljenost po X osi.
-        // To sprječava problem ako igrač nakon ormara ima malo drugačiji Z.
+
         float udaljenost = Mathf.Abs(igrac.position.x - transform.position.x);
 
         if (udaljenost > udaljenostZaUlaz)
