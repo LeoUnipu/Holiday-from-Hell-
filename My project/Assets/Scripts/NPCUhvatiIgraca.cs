@@ -32,7 +32,7 @@ public class NPCUhvatiIgraca : MonoBehaviour
         if (gameManager == null)
         {
             gameManager =
-                FindFirstObjectByType<GameManager>();
+                FindAnyObjectByType<GameManager>();
         }
 
         if (igrac == null)

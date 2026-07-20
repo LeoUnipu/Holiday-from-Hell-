@@ -40,6 +40,13 @@ public class HodajNasumicno : MonoBehaviour
         public bool teleportiraj = false;
         public Transform teleportIzlaz;
 
+        [Header("Zvuk otvaranja vrata kod teleporta")]
+        [Tooltip("Zvuk koji se reproducira nakon teleportiranja kroz vrata.")]
+        public AudioClip zvukOtvaranjaVrata;
+
+        [Range(0f, 1f)]
+        public float glasnocaZvukaOtvaranjaVrata = 1f;
+
         [Header("Animacija radnje")]
         [Tooltip(
             "Naziv Trigger parametra za animaciju radnje. " +
@@ -58,6 +65,13 @@ public class HodajNasumicno : MonoBehaviour
         )]
         public float maksimalnoTrajanjeAnimacijeRadnje = 10f;
 
+        [Header("Zvuk animacije radnje")]
+        [Tooltip("Zvuk koji se reproducira kada počne animacija radnje.")]
+        public AudioClip zvukRadnje;
+
+        [Range(0f, 1f)]
+        public float glasnocaZvukaRadnje = 1f;
+
         [Header("Animacija dok nema zamke")]
         [Tooltip(
             "Animacija koja se izvršava kada zamka nije postavljena. " +
@@ -75,6 +89,13 @@ public class HodajNasumicno : MonoBehaviour
             "Najduže čekanje završetka animacije dok nema zamke."
         )]
         public float maksimalnoTrajanjeDokNemaZamke = 10f;
+
+        [Header("Zvuk animacije dok nema zamke")]
+        [Tooltip("Zvuk koji se reproducira kada počne animacija dok nema zamke.")]
+        public AudioClip zvukDokNemaZamke;
+
+        [Range(0f, 1f)]
+        public float glasnocaZvukaDokNemaZamke = 1f;
 
         [Header("Zamka")]
         public GameObject aktivnaZamka;
@@ -95,6 +116,13 @@ public class HodajNasumicno : MonoBehaviour
         )]
         public float maksimalnoTrajanjeReakcije = 10f;
 
+        [Header("Zvuk reakcije")]
+        [Tooltip("Zvuk prve reakcije na zamku, primjerice Fall.")]
+        public AudioClip zvukReakcije;
+
+        [Range(0f, 1f)]
+        public float glasnocaZvukaReakcije = 1f;
+
         [Header("Animacija nakon reakcije")]
         [Tooltip(
             "Animacija koja se pokreće nakon prve reakcije. " +
@@ -113,6 +141,13 @@ public class HodajNasumicno : MonoBehaviour
         )]
         public float maksimalnoTrajanjeNakonReakcije = 10f;
 
+        [Header("Zvuk animacije nakon reakcije")]
+        [Tooltip("Zvuk dodatne reakcije, primjerice Angry ili GetUp.")]
+        public AudioClip zvukNakonReakcije;
+
+        [Range(0f, 1f)]
+        public float glasnocaZvukaNakonReakcije = 1f;
+
         [Header("Animacija čišćenja zamke")]
         [Tooltip(
             "Animacija kojom NPC pokupi ili očisti zamku. " +
@@ -130,6 +165,13 @@ public class HodajNasumicno : MonoBehaviour
             "Najduže čekanje završetka animacije čišćenja."
         )]
         public float maksimalnoTrajanjeCiscenjaZamke = 10f;
+
+        [Header("Zvuk animacije čišćenja zamke")]
+        [Tooltip("Zvuk koji se reproducira kada počne animacija čišćenja zamke.")]
+        public AudioClip zvukCiscenjaZamke;
+
+        [Range(0f, 1f)]
+        public float glasnocaZvukaCiscenjaZamke = 1f;
 
         [Header("Čekanje")]
         [Tooltip(
@@ -161,6 +203,10 @@ public class HodajNasumicno : MonoBehaviour
 
     [Header("Animator parametri")]
     public string walkingBool = "isWalking";
+
+    [Header("Audio Source")]
+    [Tooltip("AudioSource preko kojeg NPC reproducira zvukove animacija.")]
+    public AudioSource audioSource;
 
     private NavMeshAgent agent;
     private bool rutinaPokrenuta = false;
@@ -200,6 +246,17 @@ public class HodajNasumicno : MonoBehaviour
                 "Glavni Animator nije postavljen. " +
                 "Ručno gledanje i animacije neće raditi."
             );
+        }
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
         }
 
         agent.speed = brzinaHodanja;
@@ -274,6 +331,11 @@ public class HodajNasumicno : MonoBehaviour
                 {
                     TeleportirajNPC(
                         korak.teleportIzlaz
+                    );
+
+                    PustiZvuk(
+                        korak.zvukOtvaranjaVrata,
+                        korak.glasnocaZvukaOtvaranjaVrata
                     );
 
                     yield return new WaitForSeconds(
@@ -469,7 +531,9 @@ public class HodajNasumicno : MonoBehaviour
                     korak.stanjeDokNemaZamke,
                     korak.maksimalnoTrajanjeDokNemaZamke,
                     "dok nema zamke",
-                    korak.nazivKoraka
+                    korak.nazivKoraka,
+                    korak.zvukDokNemaZamke,
+                    korak.glasnocaZvukaDokNemaZamke
                 )
             );
 
@@ -507,6 +571,11 @@ public class HodajNasumicno : MonoBehaviour
 
         PokreniTriggerNaSvimAnimatorima(
             korak.triggerReakcije
+        );
+
+        PustiZvuk(
+            korak.zvukReakcije,
+            korak.glasnocaZvukaReakcije
         );
 
         if (ScoreManager.instance != null)
@@ -551,7 +620,9 @@ public class HodajNasumicno : MonoBehaviour
                 korak.stanjeNakonReakcije,
                 korak.maksimalnoTrajanjeNakonReakcije,
                 "nakon reakcije",
-                korak.nazivKoraka
+                korak.nazivKoraka,
+                korak.zvukNakonReakcije,
+                korak.glasnocaZvukaNakonReakcije
             )
         );
 
@@ -564,7 +635,9 @@ public class HodajNasumicno : MonoBehaviour
                 korak.stanjeCiscenjaZamke,
                 korak.maksimalnoTrajanjeCiscenjaZamke,
                 "čišćenja zamke",
-                korak.nazivKoraka
+                korak.nazivKoraka,
+                korak.zvukCiscenjaZamke,
+                korak.glasnocaZvukaCiscenjaZamke
             )
         );
 
@@ -620,6 +693,11 @@ public class HodajNasumicno : MonoBehaviour
             korak.triggerRadnje
         );
 
+        PustiZvuk(
+            korak.zvukRadnje,
+            korak.glasnocaZvukaRadnje
+        );
+
         Debug.Log(
             "Pokrenuta animacija radnje: " +
             korak.stanjeRadnje +
@@ -650,7 +728,9 @@ public class HodajNasumicno : MonoBehaviour
         string nazivStanja,
         float maksimalnoVrijeme,
         string vrstaAnimacije,
-        string nazivKoraka)
+        string nazivKoraka,
+        AudioClip zvuk = null,
+        float glasnocaZvuka = 1f)
     {
         if (string.IsNullOrEmpty(
             nazivTriggera))
@@ -675,6 +755,11 @@ public class HodajNasumicno : MonoBehaviour
 
         PokreniTriggerNaSvimAnimatorima(
             nazivTriggera
+        );
+
+        PustiZvuk(
+            zvuk,
+            glasnocaZvuka
         );
 
         Debug.Log(
@@ -874,6 +959,22 @@ public class HodajNasumicno : MonoBehaviour
             vrstaAnimacije +
             " je završena: " +
             nazivStanja
+        );
+    }
+
+    private void PustiZvuk(
+        AudioClip zvuk,
+        float glasnoca)
+    {
+        if (audioSource == null ||
+            zvuk == null)
+        {
+            return;
+        }
+
+        audioSource.PlayOneShot(
+            zvuk,
+            Mathf.Clamp01(glasnoca)
         );
     }
 

@@ -426,23 +426,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 2
     teleportiraj: 1
     teleportIzlaz: {fileID: 1442092938}
+    zvukOtvaranjaVrata: {fileID: 8300000, guid: 8d03a7a5d862a9942b2afc43107ccea9, type: 3}
+    glasnocaZvukaOtvaranjaVrata: 0.28
     triggerRadnje: 
     stanjeRadnje: 
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 0}
+    glasnocaZvukaRadnje: 1
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 0}
     bodoviZaZamku: 0
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 0}
+    glasnocaZvukaReakcije: 1
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: 
     stanjeCiscenjaZamke: 
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 0}
+    glasnocaZvukaCiscenjaZamke: 1
     trajanjeRadnje: 0
     pauzaNakonRadnje: 0
     zamkaIskoristena: 0
@@ -452,23 +464,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 2
     teleportiraj: 0
     teleportIzlaz: {fileID: 0}
+    zvukOtvaranjaVrata: {fileID: 0}
+    glasnocaZvukaOtvaranjaVrata: 1
     triggerRadnje: Mik
     stanjeRadnje: Mik
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 8300000, guid: fc145245ed36c804d9bfcac977f592b3, type: 3}
+    glasnocaZvukaRadnje: 0.28
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 1065841694}
     bodoviZaZamku: 100
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 8300000, guid: 2b4887f5de21010499594475cfd34a76, type: 3}
+    glasnocaZvukaReakcije: 0.28
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
-    triggerCiscenjaZamke: 
-    stanjeCiscenjaZamke: 
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
+    triggerCiscenjaZamke: Pick up
+    stanjeCiscenjaZamke: Pick up
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 8300000, guid: 0db1ab7dfd577bd45bface8b97db9c1a, type: 3}
+    glasnocaZvukaCiscenjaZamke: 0.28
     trajanjeRadnje: 2
     pauzaNakonRadnje: 1
     zamkaIskoristena: 0
@@ -478,23 +502,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 0
     teleportiraj: 1
     teleportIzlaz: {fileID: 761557229}
+    zvukOtvaranjaVrata: {fileID: 8300000, guid: 8d03a7a5d862a9942b2afc43107ccea9, type: 3}
+    glasnocaZvukaOtvaranjaVrata: 0.28
     triggerRadnje: 
     stanjeRadnje: 
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 0}
+    glasnocaZvukaRadnje: 1
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 0}
     bodoviZaZamku: 0
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 0}
+    glasnocaZvukaReakcije: 1
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: 
     stanjeCiscenjaZamke: 
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 0}
+    glasnocaZvukaCiscenjaZamke: 1
     trajanjeRadnje: 0
     pauzaNakonRadnje: 0
     zamkaIskoristena: 0
@@ -504,23 +540,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 0
     teleportiraj: 1
     teleportIzlaz: {fileID: 287944788}
+    zvukOtvaranjaVrata: {fileID: 0}
+    glasnocaZvukaOtvaranjaVrata: 1
     triggerRadnje: 
     stanjeRadnje: 
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 0}
+    glasnocaZvukaRadnje: 1
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 0}
     bodoviZaZamku: 0
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 0}
+    glasnocaZvukaReakcije: 1
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: 
     stanjeCiscenjaZamke: 
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 0}
+    glasnocaZvukaCiscenjaZamke: 1
     trajanjeRadnje: 0
     pauzaNakonRadnje: 0
     zamkaIskoristena: 0
@@ -530,23 +578,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 0
     teleportiraj: 1
     teleportIzlaz: {fileID: 1291276694}
+    zvukOtvaranjaVrata: {fileID: 8300000, guid: 8d03a7a5d862a9942b2afc43107ccea9, type: 3}
+    glasnocaZvukaOtvaranjaVrata: 0.28
     triggerRadnje: 
     stanjeRadnje: 
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 0}
+    glasnocaZvukaRadnje: 1
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 0}
     bodoviZaZamku: 0
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 0}
+    glasnocaZvukaReakcije: 1
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: 
     stanjeCiscenjaZamke: 
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 0}
+    glasnocaZvukaCiscenjaZamke: 1
     trajanjeRadnje: 0
     pauzaNakonRadnje: 0
     zamkaIskoristena: 0
@@ -556,23 +616,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 0
     teleportiraj: 0
     teleportIzlaz: {fileID: 0}
+    zvukOtvaranjaVrata: {fileID: 0}
+    glasnocaZvukaOtvaranjaVrata: 1
     triggerRadnje: Drink
     stanjeRadnje: Drink
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 8300000, guid: 831cc8d89095ec44cb8ec9964c36e6b3, type: 3}
+    glasnocaZvukaRadnje: 0.25
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 1564108395}
     bodoviZaZamku: 100
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 8300000, guid: 2b4887f5de21010499594475cfd34a76, type: 3}
+    glasnocaZvukaReakcije: 0.28
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: Pick up
     stanjeCiscenjaZamke: Pick up
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 8300000, guid: 0db1ab7dfd577bd45bface8b97db9c1a, type: 3}
+    glasnocaZvukaCiscenjaZamke: 0.28
     trajanjeRadnje: 2
     pauzaNakonRadnje: 1
     zamkaIskoristena: 0
@@ -582,23 +654,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 2
     teleportiraj: 0
     teleportIzlaz: {fileID: 0}
+    zvukOtvaranjaVrata: {fileID: 0}
+    glasnocaZvukaOtvaranjaVrata: 1
     triggerRadnje: Talk
     stanjeRadnje: Talk
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 8300000, guid: eac2d7110a499db4a9470a071ac0229f, type: 3}
+    glasnocaZvukaRadnje: 0.22
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 946351042}
     bodoviZaZamku: 100
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 8300000, guid: 2b4887f5de21010499594475cfd34a76, type: 3}
+    glasnocaZvukaReakcije: 0.28
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: Pick up
     stanjeCiscenjaZamke: Pick up
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 8300000, guid: 0db1ab7dfd577bd45bface8b97db9c1a, type: 3}
+    glasnocaZvukaCiscenjaZamke: 0.28
     trajanjeRadnje: 2
     pauzaNakonRadnje: 1
     zamkaIskoristena: 0
@@ -608,23 +692,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 0
     teleportiraj: 1
     teleportIzlaz: {fileID: 1656561757}
+    zvukOtvaranjaVrata: {fileID: 8300000, guid: 8d03a7a5d862a9942b2afc43107ccea9, type: 3}
+    glasnocaZvukaOtvaranjaVrata: 0.28
     triggerRadnje: 
     stanjeRadnje: 
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 0}
+    glasnocaZvukaRadnje: 1
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 0}
     bodoviZaZamku: 0
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 0}
+    glasnocaZvukaReakcije: 1
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: 
     stanjeCiscenjaZamke: 
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 0}
+    glasnocaZvukaCiscenjaZamke: 1
     trajanjeRadnje: 0
     pauzaNakonRadnje: 0
     zamkaIskoristena: 0
@@ -634,23 +730,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 0
     teleportiraj: 1
     teleportIzlaz: {fileID: 1926435683}
+    zvukOtvaranjaVrata: {fileID: 8300000, guid: 8d03a7a5d862a9942b2afc43107ccea9, type: 3}
+    glasnocaZvukaOtvaranjaVrata: 0.28
     triggerRadnje: 
     stanjeRadnje: 
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 0}
+    glasnocaZvukaRadnje: 1
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 0}
     bodoviZaZamku: 0
     triggerReakcije: 0
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 0}
+    glasnocaZvukaReakcije: 1
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: 
     stanjeCiscenjaZamke: 
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 0}
+    glasnocaZvukaCiscenjaZamke: 1
     trajanjeRadnje: 0
     pauzaNakonRadnje: 0
     zamkaIskoristena: 0
@@ -660,23 +768,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 2
     teleportiraj: 0
     teleportIzlaz: {fileID: 0}
+    zvukOtvaranjaVrata: {fileID: 0}
+    glasnocaZvukaOtvaranjaVrata: 1
     triggerRadnje: 
     stanjeRadnje: 
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 0}
+    glasnocaZvukaRadnje: 1
     triggerDokNemaZamke: Wc
     stanjeDokNemaZamke: Wc
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 2005793857}
     bodoviZaZamku: 100
     triggerReakcije: Fall
     stanjeReakcije: Fall
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 8300000, guid: 3afb59543afc9ce47b9b33888208d111, type: 3}
+    glasnocaZvukaReakcije: 0.28
     triggerNakonReakcije: Angry
     stanjeNakonReakcije: Angry
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 8300000, guid: 2b4887f5de21010499594475cfd34a76, type: 3}
+    glasnocaZvukaNakonReakcije: 0.28
     triggerCiscenjaZamke: Pick up2
     stanjeCiscenjaZamke: Pick up2
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 8300000, guid: 0db1ab7dfd577bd45bface8b97db9c1a, type: 3}
+    glasnocaZvukaCiscenjaZamke: 0.28
     trajanjeRadnje: 2
     pauzaNakonRadnje: 1
     zamkaIskoristena: 0
@@ -686,23 +806,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 0
     teleportiraj: 1
     teleportIzlaz: {fileID: 2084503237}
+    zvukOtvaranjaVrata: {fileID: 8300000, guid: 8d03a7a5d862a9942b2afc43107ccea9, type: 3}
+    glasnocaZvukaOtvaranjaVrata: 0.28
     triggerRadnje: 
     stanjeRadnje: 
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 0}
+    glasnocaZvukaRadnje: 1
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 0}
     bodoviZaZamku: 0
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 0}
+    glasnocaZvukaReakcije: 1
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: 
     stanjeCiscenjaZamke: 
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 0}
+    glasnocaZvukaCiscenjaZamke: 1
     trajanjeRadnje: 0
     pauzaNakonRadnje: 0
     zamkaIskoristena: 0
@@ -712,23 +844,35 @@ MonoBehaviour:
     smjerGledanjaNakonRadnje: 0
     teleportiraj: 1
     teleportIzlaz: {fileID: 1291276694}
+    zvukOtvaranjaVrata: {fileID: 8300000, guid: 8d03a7a5d862a9942b2afc43107ccea9, type: 3}
+    glasnocaZvukaOtvaranjaVrata: 0.28
     triggerRadnje: 
     stanjeRadnje: 
     maksimalnoTrajanjeAnimacijeRadnje: 10
+    zvukRadnje: {fileID: 0}
+    glasnocaZvukaRadnje: 1
     triggerDokNemaZamke: 
     stanjeDokNemaZamke: 
     maksimalnoTrajanjeDokNemaZamke: 10
+    zvukDokNemaZamke: {fileID: 0}
+    glasnocaZvukaDokNemaZamke: 1
     aktivnaZamka: {fileID: 0}
     bodoviZaZamku: 0
     triggerReakcije: Angry
     stanjeReakcije: Angry
     maksimalnoTrajanjeReakcije: 10
+    zvukReakcije: {fileID: 0}
+    glasnocaZvukaReakcije: 1
     triggerNakonReakcije: 
     stanjeNakonReakcije: 
     maksimalnoTrajanjeNakonReakcije: 10
+    zvukNakonReakcije: {fileID: 0}
+    glasnocaZvukaNakonReakcije: 1
     triggerCiscenjaZamke: 
     stanjeCiscenjaZamke: 
     maksimalnoTrajanjeCiscenjaZamke: 10
+    zvukCiscenjaZamke: {fileID: 0}
+    glasnocaZvukaCiscenjaZamke: 1
     trajanjeRadnje: 0
     pauzaNakonRadnje: 0
     zamkaIskoristena: 0
@@ -743,6 +887,7 @@ MonoBehaviour:
   - {fileID: 1122656536}
   - {fileID: 1651001332}
   walkingBool: isWalking
+  audioSource: {fileID: 0}
 --- !u!136 &40481947
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -7655,8 +7800,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimacijeInterakcije
   animator: {fileID: 402281228}
-  kretanjeIgraca: {fileID: 0}
-  rbIgraca: {fileID: 0}
+  kretanjeIgraca: {fileID: 1887031542}
+  rbIgraca: {fileID: 1887031543}
   trajanjeSkupljanja: 1.8
   trajanjePretrage: 1.5
   trajanjePostavljanjaNisko: 2.2
