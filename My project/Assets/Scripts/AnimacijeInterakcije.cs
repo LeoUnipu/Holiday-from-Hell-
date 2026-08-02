@@ -42,14 +42,12 @@ public class AnimacijeInterakcije : MonoBehaviour
             return;
         }
 
-
         if (Time.time <
             vrijemePocetka + zastitaOdPrvogKlika)
         {
             return;
         }
 
-        
         if (Input.GetMouseButtonDown(1))
         {
             PrekiniTrenutnuAnimaciju();
@@ -102,7 +100,6 @@ public class AnimacijeInterakcije : MonoBehaviour
 
     public void PokreniSkupljanje()
     {
-        
         PokreniAnimaciju(
             "Pickup",
             trajanjeSkupljanja,
@@ -112,7 +109,6 @@ public class AnimacijeInterakcije : MonoBehaviour
 
     public void PokreniPraznuPretragu()
     {
-        
         PokreniAnimaciju(
             "Search",
             trajanjePretrage,
@@ -122,7 +118,6 @@ public class AnimacijeInterakcije : MonoBehaviour
 
     public void PokreniPostavljanjeNisko()
     {
-        
         PokreniAnimaciju(
             "PlaceLow",
             trajanjePostavljanjaNisko,
@@ -132,7 +127,6 @@ public class AnimacijeInterakcije : MonoBehaviour
 
     public void PokreniPostavljanjeVisoko()
     {
-        
         PokreniAnimaciju(
             "PlaceHigh",
             trajanjePostavljanjaVisoko,
@@ -182,7 +176,6 @@ public class AnimacijeInterakcije : MonoBehaviour
         animacijaUTijeku = false;
         mozeSePrekinuti = false;
 
-        
         zadnjaAnimacijaJePrekinuta = false;
 
         OtkljucajIgraca();
@@ -190,12 +183,6 @@ public class AnimacijeInterakcije : MonoBehaviour
 
     public void PrekiniTrenutnuAnimaciju()
     {
-        if (!animacijaUTijeku ||
-            !mozeSePrekinuti)
-        {
-            return;
-        }
-
         if (aktivnaCoroutine != null)
         {
             StopCoroutine(aktivnaCoroutine);
@@ -210,16 +197,21 @@ public class AnimacijeInterakcije : MonoBehaviour
 
         if (animator != null)
         {
-            animator.CrossFade(
-                "Movement",
-                0.1f
+            animator.ResetTrigger(
+                "CancelInteraction"
             );
+
+            animator.SetTrigger(
+                "CancelInteraction"
+            );
+
+            animator.Update(0f);
         }
 
         OtkljucajIgraca();
 
         Debug.Log(
-            "Animacija i radnja su prekinute desnim klikom."
+            "Animacija i radnja su odmah prekinute."
         );
     }
 
@@ -277,5 +269,6 @@ public class AnimacijeInterakcije : MonoBehaviour
         animator.ResetTrigger("Search");
         animator.ResetTrigger("PlaceLow");
         animator.ResetTrigger("PlaceHigh");
+        animator.ResetTrigger("CancelInteraction");
     }
 }

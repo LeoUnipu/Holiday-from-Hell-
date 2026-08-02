@@ -11,6 +11,10 @@ public class InventoryIgraca : MonoBehaviour
     public GameObject ikonaLjepila;
     public GameObject ikonaLjutogUmaka;
 
+    [Header("Odabrani predmet")]
+    [SerializeField]
+    private string odabraniPredmet = "";
+
     private void Start()
     {
         OsvjeziInventoryUI();
@@ -40,7 +44,71 @@ public class InventoryIgraca : MonoBehaviour
             Debug.Log("Uklonjen predmet: " + imePredmeta);
         }
 
+        if (odabraniPredmet == imePredmeta)
+        {
+            odabraniPredmet = "";
+        }
+
         OsvjeziInventoryUI();
+    }
+
+    public void OdaberiSapun()
+    {
+        OdaberiPredmet("Sapun");
+    }
+
+    public void OdaberiJaje()
+    {
+        OdaberiPredmet("Jaje");
+    }
+
+    public void OdaberiLjepilo()
+    {
+        OdaberiPredmet("Ljepilo");
+    }
+
+    public void OdaberiLjutiUmak()
+    {
+        OdaberiPredmet("LjutiUmak");
+    }
+
+    public void OdaberiPredmet(string imePredmeta)
+    {
+        if (!ImaPredmet(imePredmeta))
+        {
+            Debug.Log(
+                "Igrač nema predmet: " +
+                imePredmeta
+            );
+
+            return;
+        }
+
+        odabraniPredmet = imePredmeta;
+
+        Debug.Log(
+            "Odabran predmet: " +
+            odabraniPredmet
+        );
+    }
+
+    public bool JePredmetOdabran(string imePredmeta)
+    {
+        return odabraniPredmet == imePredmeta;
+    }
+
+    public string DohvatiOdabraniPredmet()
+    {
+        return odabraniPredmet;
+    }
+
+    public void PonistiOdabraniPredmet()
+    {
+        odabraniPredmet = "";
+
+        Debug.Log(
+            "Odabir predmeta je poništen."
+        );
     }
 
     private void OsvjeziInventoryUI()

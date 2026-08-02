@@ -13,6 +13,15 @@ public class VrataKlik : MonoBehaviour
     public bool mijenjaKat = false;
     public float yPozicijaKamere = 2.5f;
 
+    [Header("Izlaz iz kuće")]
+    [Tooltip(
+        "Uključi samo na vratima koja vode izvan kuće. " +
+        "Nakon teleportiranja pokrenut će se Game Over."
+    )]
+    public bool izlazIzKuce = false;
+
+    public GameManager gameManager;
+
     public void Teleportiraj()
     {
         if (igrac == null || ciljnaPozicija == null)
@@ -20,23 +29,31 @@ public class VrataKlik : MonoBehaviour
             return;
         }
 
-
-        float udaljenost = Mathf.Abs(igrac.position.x - transform.position.x);
+        float udaljenost =
+            Mathf.Abs(
+                igrac.position.x -
+                transform.position.x
+            );
 
         if (udaljenost > udaljenostZaUlaz)
         {
-            Debug.Log("Igrač je predaleko od vrata.");
+            Debug.Log(
+                "Igrač je predaleko od vrata."
+            );
+
             return;
         }
 
-        KretanjeMisem kretanje = igrac.GetComponent<KretanjeMisem>();
+        KretanjeMisem kretanje =
+            igrac.GetComponent<KretanjeMisem>();
 
         if (kretanje != null)
         {
             kretanje.ZaustaviKretanje();
         }
 
-        Rigidbody rb = igrac.GetComponent<Rigidbody>();
+        Rigidbody rb =
+            igrac.GetComponent<Rigidbody>();
 
         if (rb != null)
         {
@@ -44,7 +61,8 @@ public class VrataKlik : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        Vector3 novaPozicija = ciljnaPozicija.position;
+        Vector3 novaPozicija =
+            ciljnaPozicija.position;
 
         igrac.position = novaPozicija;
 
@@ -55,9 +73,36 @@ public class VrataKlik : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        if (mijenjaKat && kameraPratiKat != null)
+        if (mijenjaKat &&
+            kameraPratiKat != null)
         {
-            kameraPratiKat.PomakniNaKat(yPozicijaKamere);
+            kameraPratiKat.PomakniNaKat(
+                yPozicijaKamere
+            );
+        }
+
+        if (izlazIzKuce)
+        {
+            if (gameManager == null)
+            {
+                gameManager =
+                    FindAnyObjectByType<GameManager>();
+            }
+
+            if (gameManager != null)
+            {
+                Debug.Log(
+                    "Igrač je izašao iz kuće. Game Over."
+                );
+
+                gameManager.GameOver();
+            }
+            else
+            {
+                Debug.LogError(
+                    "GameManager nije pronađen."
+                );
+            }
         }
     }
 }

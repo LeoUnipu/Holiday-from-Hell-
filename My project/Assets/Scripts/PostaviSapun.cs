@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PostaviSapun : MonoBehaviour
@@ -27,8 +28,27 @@ public class PostaviSapun : MonoBehaviour
     [Tooltip("Najduže čekanje povratka u Idle.")]
     public float maksimalnoCekanjeIdle = 10f;
 
-    [Header("Timer")]
-    public TMP_Text timerTekst;
+    [Header("Animacija pogrešnog predmeta")]
+    [Tooltip(
+        "Trigger koji se pokreće kada igrač odabere pogrešan predmet. " +
+        "Primjer: WrongItem."
+    )]
+    public string triggerPogresnogPredmeta = "WrongItem";
+
+    [Tooltip(
+        "Točan naziv Animator stanja za pogrešan predmet. " +
+        "Primjer: WrongItem."
+    )]
+    public string stanjePogresnogPredmeta = "WrongItem";
+
+    [Tooltip(
+        "Najduže čekanje završetka animacije pogrešnog predmeta."
+    )]
+    public float maksimalnoTrajanjePogresneAnimacije = 5f;
+
+    [Header("Progress bar")]
+    public GameObject progressBar;
+    public Image progressBarFill;
 
     [Header("Zvukovi")]
     public AudioSource audioSource;
@@ -39,11 +59,14 @@ public class PostaviSapun : MonoBehaviour
     private bool postavljeno = false;
     private bool postavljaSe = false;
 
+    private bool pogresnaAnimacijaUTijeku = false;
+
     private KretanjeMisem kretanjeIgraca;
     private AnimacijeInterakcije animacije;
     private Rigidbody rb;
 
     private Coroutine postavljanjeCoroutine;
+    private Coroutine pogresnaAnimacijaCoroutine;
 
     private float originalnaBrzinaAnimatora = 1f;
 
@@ -72,9 +95,14 @@ public class PostaviSapun : MonoBehaviour
             audioSource = GetComponent<AudioSource>();
         }
 
-        if (timerTekst != null)
+        if (progressBar != null)
         {
-            timerTekst.gameObject.SetActive(false);
+            progressBar.SetActive(false);
+        }
+
+        if (progressBarFill != null)
+        {
+            progressBarFill.fillAmount = 0f;
         }
 
         if (sapunZamka != null)
@@ -100,7 +128,8 @@ public class PostaviSapun : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!postavljaSe)
+        if (!postavljaSe &&
+            !pogresnaAnimacijaUTijeku)
         {
             return;
         }
@@ -110,7 +139,8 @@ public class PostaviSapun : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!postavljaSe)
+        if (!postavljaSe &&
+            !pogresnaAnimacijaUTijeku)
         {
             return;
         }
@@ -120,7 +150,9 @@ public class PostaviSapun : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (postavljaSe || postavljeno)
+        if (postavljaSe ||
+            postavljeno ||
+            pogresnaAnimacijaUTijeku)
         {
             return;
         }
@@ -160,6 +192,31 @@ public class PostaviSapun : MonoBehaviour
             return;
         }
 
+        if (string.IsNullOrEmpty(
+            inventory.DohvatiOdabraniPredmet()))
+        {
+            Debug.Log(
+                "Prvo moraš odabrati predmet iz inventoryja."
+            );
+
+            PokreniPogresnuAnimaciju();
+
+            return;
+        }
+
+        if (!inventory.JePredmetOdabran("Sapun"))
+        {
+            Debug.Log(
+                "Na ovom mjestu moraš koristiti Sapun. " +
+                "Odabrani predmet je: " +
+                inventory.DohvatiOdabraniPredmet()
+            );
+
+            PokreniPogresnuAnimaciju();
+
+            return;
+        }
+
         if (!inventory.ImaPredmet("Sapun"))
         {
             Debug.Log(
@@ -185,6 +242,184 @@ public class PostaviSapun : MonoBehaviour
 
         postavljanjeCoroutine = StartCoroutine(
             PostaviSapunNakonAnimacije(inventory)
+        );
+    }
+
+    private void PokreniPogresnuAnimaciju()
+    {
+        if (pogresnaAnimacijaUTijeku)
+        {
+            return;
+        }
+
+        if (animatorIgraca == null)
+        {
+            Debug.LogWarning(
+                "Animator igrača nije postavljen za pogrešnu animaciju."
+            );
+
+            return;
+        }
+
+        if (string.IsNullOrEmpty(
+            triggerPogresnogPredmeta))
+        {
+            Debug.LogWarning(
+                "Trigger pogrešnog predmeta nije postavljen."
+            );
+
+            return;
+        }
+
+        if (!AnimatorImaTrigger(
+            animatorIgraca,
+            triggerPogresnogPredmeta))
+        {
+            Debug.LogWarning(
+                "Animator nema Trigger parametar: " +
+                triggerPogresnogPredmeta
+            );
+
+            return;
+        }
+
+        pogresnaAnimacijaCoroutine =
+            StartCoroutine(
+                PokreniICekajPogresnuAnimaciju()
+            );
+    }
+
+    private IEnumerator PokreniICekajPogresnuAnimaciju()
+    {
+        pogresnaAnimacijaUTijeku = true;
+
+        ZakljucajKretanje();
+        OkreniIgracaPremaMjestu();
+
+        animatorIgraca.ResetTrigger(
+            triggerPogresnogPredmeta
+        );
+
+        animatorIgraca.SetTrigger(
+            triggerPogresnogPredmeta
+        );
+
+        float maksimalnoVrijeme =
+            Mathf.Max(
+                0.5f,
+                maksimalnoTrajanjePogresneAnimacije
+            );
+
+        float timer = 0f;
+        bool animacijaJePocela = false;
+
+        while (timer < maksimalnoVrijeme)
+        {
+            ZaustaviRigidbody();
+
+            AnimatorStateInfo trenutnoStanje =
+                animatorIgraca.GetCurrentAnimatorStateInfo(0);
+
+            AnimatorStateInfo sljedeceStanje =
+                animatorIgraca.GetNextAnimatorStateInfo(0);
+
+            bool trenutnoJePogresnaAnimacija =
+                trenutnoStanje.IsName(
+                    stanjePogresnogPredmeta
+                );
+
+            bool sljedeceJePogresnaAnimacija =
+                animatorIgraca.IsInTransition(0) &&
+                sljedeceStanje.IsName(
+                    stanjePogresnogPredmeta
+                );
+
+            if (trenutnoJePogresnaAnimacija ||
+                sljedeceJePogresnaAnimacija)
+            {
+                animacijaJePocela = true;
+                break;
+            }
+
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+
+        if (!animacijaJePocela)
+        {
+            Debug.LogWarning(
+                "Animator nije ušao u stanje pogrešnog predmeta: " +
+                stanjePogresnogPredmeta
+            );
+
+            ZavrsniPogresnuAnimaciju();
+
+            yield break;
+        }
+
+        timer = 0f;
+
+        while (timer < maksimalnoVrijeme)
+        {
+            ZaustaviRigidbody();
+
+            AnimatorStateInfo trenutnoStanje =
+                animatorIgraca.GetCurrentAnimatorStateInfo(0);
+
+            bool animatorJeUPrijelazu =
+                animatorIgraca.IsInTransition(0);
+
+            bool trenutnoJePogresnaAnimacija =
+                trenutnoStanje.IsName(
+                    stanjePogresnogPredmeta
+                );
+
+            bool animacijaJeZavrsila =
+                trenutnoJePogresnaAnimacija &&
+                trenutnoStanje.normalizedTime >= 1f;
+
+            if (animacijaJeZavrsila &&
+                animatorJeUPrijelazu)
+            {
+                break;
+            }
+
+            if (!trenutnoJePogresnaAnimacija &&
+                !animatorJeUPrijelazu)
+            {
+                break;
+            }
+
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+
+        timer = 0f;
+
+        while (animatorIgraca.IsInTransition(0) &&
+               timer < 2f)
+        {
+            ZaustaviRigidbody();
+
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+
+        ZavrsniPogresnuAnimaciju();
+    }
+
+    private void ZavrsniPogresnuAnimaciju()
+    {
+        pogresnaAnimacijaUTijeku = false;
+        pogresnaAnimacijaCoroutine = null;
+
+        OtkljucajKretanje();
+
+        Debug.Log(
+            "Završena je animacija pogrešnog predmeta."
         );
     }
 
@@ -214,18 +449,26 @@ public class PostaviSapun : MonoBehaviour
 
         animacije.PokreniPostavljanjeNisko();
 
-        if (timerTekst != null)
+        if (progressBar != null)
         {
-            timerTekst.gameObject.SetActive(true);
+            progressBar.SetActive(true);
+        }
+
+        if (progressBarFill != null)
+        {
+            progressBarFill.fillAmount = 0f;
         }
 
         PokreniZvukTajmera();
 
-        float preostaloVrijeme =
+        float ukupnoVrijeme =
             Mathf.Max(
                 0.1f,
                 ukupnoTrajanjePostavljanja
             );
+
+        float preostaloVrijeme =
+            ukupnoVrijeme;
 
         while (preostaloVrijeme > 0f)
         {
@@ -238,17 +481,20 @@ public class PostaviSapun : MonoBehaviour
 
             preostaloVrijeme -= Time.deltaTime;
 
-            if (timerTekst != null)
+            if (progressBarFill != null)
             {
-                timerTekst.text =
-                    Mathf.CeilToInt(
-                        Mathf.Max(
-                            0f,
-                            preostaloVrijeme
-                        )
-                    ).ToString();
+                float protekloVrijeme =
+                    ukupnoVrijeme -
+                    Mathf.Max(
+                        0f,
+                        preostaloVrijeme
+                    );
 
-                timerTekst.ForceMeshUpdate();
+                progressBarFill.fillAmount =
+                    Mathf.Clamp01(
+                        protekloVrijeme /
+                        ukupnoVrijeme
+                    );
             }
 
             yield return null;
@@ -293,14 +539,16 @@ public class PostaviSapun : MonoBehaviour
 
         PustiZvukPostavljeno();
 
-        if (timerTekst != null)
+        if (progressBarFill != null)
         {
-            timerTekst.text = "OK";
-            timerTekst.ForceMeshUpdate();
+            progressBarFill.fillAmount = 1f;
+        }
 
-            float vrijemeZaOK = 0.5f;
+        if (progressBar != null)
+        {
+            float vrijemeZaPrikazPunogBara = 0.5f;
 
-            while (vrijemeZaOK > 0f)
+            while (vrijemeZaPrikazPunogBara > 0f)
             {
                 if (!postavljaSe)
                 {
@@ -309,12 +557,13 @@ public class PostaviSapun : MonoBehaviour
 
                 DrziIgracaZakljucanog();
 
-                vrijemeZaOK -= Time.deltaTime;
+                vrijemeZaPrikazPunogBara -=
+                    Time.deltaTime;
 
                 yield return null;
             }
 
-            timerTekst.gameObject.SetActive(false);
+            progressBar.SetActive(false);
         }
 
         postavljeno = true;
@@ -485,16 +734,19 @@ public class PostaviSapun : MonoBehaviour
         VratiBrzinuAnimatora();
         ZaustaviZvukTajmera();
 
-        if (animacije != null &&
-            animacije.JeLiAnimacijaUTijeku())
+        if (animacije != null)
         {
             animacije.PrekiniTrenutnuAnimaciju();
         }
 
-        if (timerTekst != null)
+        if (progressBarFill != null)
         {
-            timerTekst.text = "PREKINUTO";
-            timerTekst.gameObject.SetActive(false);
+            progressBarFill.fillAmount = 0f;
+        }
+
+        if (progressBar != null)
+        {
+            progressBar.SetActive(false);
         }
 
         OtkljucajKretanje();
@@ -548,13 +800,64 @@ public class PostaviSapun : MonoBehaviour
         );
     }
 
+    private bool AnimatorImaTrigger(
+        Animator ciljaniAnimator,
+        string nazivTriggera)
+    {
+        if (ciljaniAnimator == null ||
+            string.IsNullOrEmpty(nazivTriggera))
+        {
+            return false;
+        }
+
+        foreach (
+            AnimatorControllerParameter parametar
+            in ciljaniAnimator.parameters)
+        {
+            if (parametar.name == nazivTriggera &&
+                parametar.type ==
+                AnimatorControllerParameterType.Trigger)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void OnDisable()
     {
         VratiBrzinuAnimatora();
 
+        if (progressBarFill != null)
+        {
+            progressBarFill.fillAmount = 0f;
+        }
+
+        if (progressBar != null)
+        {
+            progressBar.SetActive(false);
+        }
+
         if (postavljaSe)
         {
             postavljaSe = false;
+            OtkljucajKretanje();
+        }
+
+        if (pogresnaAnimacijaUTijeku)
+        {
+            pogresnaAnimacijaUTijeku = false;
+
+            if (pogresnaAnimacijaCoroutine != null)
+            {
+                StopCoroutine(
+                    pogresnaAnimacijaCoroutine
+                );
+
+                pogresnaAnimacijaCoroutine = null;
+            }
+
             OtkljucajKretanje();
         }
     }

@@ -1,12 +1,16 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager instance;
 
     public TextMeshProUGUI scoreTekst;
+    public Image scoreFill;
+
     public int score = 0;
+    public int maksimalniScore = 100;
 
     private void Awake()
     {
@@ -35,6 +39,14 @@ public class ScoreManager : MonoBehaviour
         if (scoreTekst != null)
         {
             scoreTekst.text = "Score: " + score;
+        }
+
+        if (scoreFill != null)
+        {
+            scoreFill.fillAmount =
+                Mathf.Clamp01(
+                    (float)score / maksimalniScore
+                );
         }
     }
 }

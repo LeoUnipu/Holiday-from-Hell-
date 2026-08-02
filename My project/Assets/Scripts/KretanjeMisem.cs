@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class KretanjeMisem : MonoBehaviour
 {
@@ -7,6 +8,13 @@ public class KretanjeMisem : MonoBehaviour
 
     public Animator animator;
     public Transform modelLika;
+
+    [Header("Praćenje kamerom")]
+    public bool kameraPratiIgraca = true;
+
+    [Tooltip("Položaj kamere u odnosu na igrača.")]
+    public Vector3 pomakKamere =
+        new Vector3(0f, 2.6f, -12f);
 
     [Header("Provjera prepreka")]
     public float udaljenostProvjerePrepreke = 0.55f;
@@ -47,6 +55,12 @@ public class KretanjeMisem : MonoBehaviour
     private void Update()
     {
         if (!Input.GetMouseButtonDown(0))
+        {
+            return;
+        }
+
+        if (EventSystem.current != null &&
+            EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
@@ -158,6 +172,22 @@ public class KretanjeMisem : MonoBehaviour
         );
 
         rb.MovePosition(novaPozicija);
+    }
+
+    private void LateUpdate()
+    {
+        if (!kameraPratiIgraca)
+        {
+            return;
+        }
+
+        if (glavnaKamera == null)
+        {
+            return;
+        }
+
+        glavnaKamera.transform.position =
+            transform.position + pomakKamere;
     }
 
     private bool PostojiPreprekaIspred(float smjerX)
