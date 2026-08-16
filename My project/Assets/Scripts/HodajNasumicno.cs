@@ -8,7 +8,9 @@ public class HodajNasumicno : MonoBehaviour
     {
         Automatski,
         Lijevo,
-        Desno
+        Desno,
+        Naprijed,
+        Nazad
     }
 
     [System.Serializable]
@@ -26,6 +28,14 @@ public class HodajNasumicno : MonoBehaviour
             "Automatski ostavlja trenutni smjer."
         )]
         public SmjerGledanja smjerGledanjaNakonDolaska =
+            SmjerGledanja.Automatski;
+
+        [Header("Smjer gledanja tijekom radnje")]
+        [Tooltip(
+            "Smjer u kojem NPC gleda tijekom izvođenja radnje. " +
+            "Automatski ostavlja trenutni smjer."
+        )]
+        public SmjerGledanja smjerGledanjaTijekomRadnje =
             SmjerGledanja.Automatski;
 
         [Header("Smjer gledanja nakon radnje")]
@@ -99,6 +109,13 @@ public class HodajNasumicno : MonoBehaviour
 
         [Header("Zamka")]
         public GameObject aktivnaZamka;
+
+        [Header("Efekt zamke")]
+        [Tooltip(
+            "Opcionalni Particle System koji se pokreće kada NPC aktivira zamku. " +
+            "Ostavi prazno ako zamka nema efekt."
+        )]
+        public ParticleSystem efektZamke;
 
         [Tooltip("Koliko bodova igrač dobije za ovu zamku.")]
         public int bodoviZaZamku = 100;
@@ -213,6 +230,8 @@ public class HodajNasumicno : MonoBehaviour
 
     private const float ROTACIJA_DESNO = 84.79f;
     private const float ROTACIJA_LIJEVO = 264.79f;
+    private const float ROTACIJA_NAPRIJED = 354.79f;
+    private const float ROTACIJA_NAZAD = 174.79f;
 
     private Transform modelNPC;
 
@@ -484,9 +503,30 @@ public class HodajNasumicno : MonoBehaviour
             modelNPC.localEulerAngles;
 
         float novaRotacijaY =
-            smjer == SmjerGledanja.Desno
-                ? ROTACIJA_DESNO
-                : ROTACIJA_LIJEVO;
+            ROTACIJA_DESNO;
+
+        switch (smjer)
+        {
+            case SmjerGledanja.Lijevo:
+                novaRotacijaY =
+                    ROTACIJA_LIJEVO;
+                break;
+
+            case SmjerGledanja.Desno:
+                novaRotacijaY =
+                    ROTACIJA_DESNO;
+                break;
+
+            case SmjerGledanja.Naprijed:
+                novaRotacijaY =
+                    ROTACIJA_NAPRIJED;
+                break;
+
+            case SmjerGledanja.Nazad:
+                novaRotacijaY =
+                    ROTACIJA_NAZAD;
+                break;
+        }
 
         modelNPC.localRotation =
             Quaternion.Euler(
@@ -502,7 +542,7 @@ public class HodajNasumicno : MonoBehaviour
         ZaustaviNPC();
 
         PostaviSmjerGledanja(
-            korak.smjerGledanjaNakonDolaska
+            korak.smjerGledanjaTijekomRadnje
         );
 
         yield return new WaitForSeconds(
@@ -562,6 +602,11 @@ public class HodajNasumicno : MonoBehaviour
             "NPC je pronašao zamku: " +
             korak.nazivKoraka
         );
+
+        if (korak.efektZamke != null)
+        {
+            korak.efektZamke.Play();
+        }
 
         ZaustaviNPC();
 
@@ -686,7 +731,7 @@ public class HodajNasumicno : MonoBehaviour
         ZaustaviNPC();
 
         PostaviSmjerGledanja(
-            korak.smjerGledanjaNakonDolaska
+            korak.smjerGledanjaTijekomRadnje
         );
 
         PokreniTriggerNaSvimAnimatorima(
