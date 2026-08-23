@@ -100,6 +100,22 @@ public class HodajNasumicno : MonoBehaviour
         )]
         public float maksimalnoTrajanjeDokNemaZamke = 10f;
 
+        [Header("Smjer gledanja tijekom animacije dok nema zamke")]
+        [Tooltip(
+            "Smjer u kojem NPC gleda tijekom animacije dok nema zamke. " +
+            "Automatski ostavlja trenutni smjer."
+        )]
+        public SmjerGledanja smjerGledanjaDokNemaZamke =
+            SmjerGledanja.Automatski;
+
+        [Header("Smjer gledanja nakon animacije dok nema zamke")]
+        [Tooltip(
+            "Smjer u kojem NPC gleda nakon što animacija dok nema zamke završi. " +
+            "Automatski ostavlja trenutni smjer."
+        )]
+        public SmjerGledanja smjerGledanjaNakonDokNemaZamke =
+            SmjerGledanja.Automatski;
+
         [Header("Zvuk animacije dok nema zamke")]
         [Tooltip("Zvuk koji se reproducira kada počne animacija dok nema zamke.")]
         public AudioClip zvukDokNemaZamke;
@@ -133,6 +149,22 @@ public class HodajNasumicno : MonoBehaviour
         )]
         public float maksimalnoTrajanjeReakcije = 10f;
 
+        [Header("Smjer gledanja tijekom reakcije")]
+        [Tooltip(
+            "Smjer u kojem NPC gleda tijekom reakcije na zamku. " +
+            "Automatski ostavlja trenutni smjer."
+        )]
+        public SmjerGledanja smjerGledanjaTijekomReakcije =
+            SmjerGledanja.Automatski;
+
+        [Header("Smjer gledanja nakon reakcije")]
+        [Tooltip(
+            "Smjer u kojem NPC gleda nakon što reakcija završi. " +
+            "Automatski ostavlja trenutni smjer."
+        )]
+        public SmjerGledanja smjerGledanjaNakonReakcije =
+            SmjerGledanja.Automatski;
+
         [Header("Zvuk reakcije")]
         [Tooltip("Zvuk prve reakcije na zamku, primjerice Fall.")]
         public AudioClip zvukReakcije;
@@ -158,6 +190,22 @@ public class HodajNasumicno : MonoBehaviour
         )]
         public float maksimalnoTrajanjeNakonReakcije = 10f;
 
+        [Header("Smjer gledanja tijekom animacije nakon reakcije")]
+        [Tooltip(
+            "Smjer u kojem NPC gleda tijekom animacije nakon reakcije. " +
+            "Automatski ostavlja trenutni smjer."
+        )]
+        public SmjerGledanja smjerGledanjaTijekomNakonReakcije =
+            SmjerGledanja.Automatski;
+
+        [Header("Smjer gledanja nakon animacije nakon reakcije")]
+        [Tooltip(
+            "Smjer u kojem NPC gleda nakon što animacija nakon reakcije završi. " +
+            "Automatski ostavlja trenutni smjer."
+        )]
+        public SmjerGledanja smjerGledanjaNakonAnimacijeNakonReakcije =
+            SmjerGledanja.Automatski;
+
         [Header("Zvuk animacije nakon reakcije")]
         [Tooltip("Zvuk dodatne reakcije, primjerice Angry ili GetUp.")]
         public AudioClip zvukNakonReakcije;
@@ -182,6 +230,22 @@ public class HodajNasumicno : MonoBehaviour
             "Najduže čekanje završetka animacije čišćenja."
         )]
         public float maksimalnoTrajanjeCiscenjaZamke = 10f;
+
+        [Header("Smjer gledanja tijekom animacije čišćenja zamke")]
+        [Tooltip(
+            "Smjer u kojem NPC gleda tijekom animacije čišćenja zamke. " +
+            "Automatski ostavlja trenutni smjer."
+        )]
+        public SmjerGledanja smjerGledanjaTijekomCiscenjaZamke =
+            SmjerGledanja.Automatski;
+
+        [Header("Smjer gledanja nakon animacije čišćenja zamke")]
+        [Tooltip(
+            "Smjer u kojem NPC gleda nakon što animacija čišćenja zamke završi. " +
+            "Automatski ostavlja trenutni smjer."
+        )]
+        public SmjerGledanja smjerGledanjaNakonCiscenjaZamke =
+            SmjerGledanja.Automatski;
 
         [Header("Zvuk animacije čišćenja zamke")]
         [Tooltip("Zvuk koji se reproducira kada počne animacija čišćenja zamke.")]
@@ -573,7 +637,9 @@ public class HodajNasumicno : MonoBehaviour
                     "dok nema zamke",
                     korak.nazivKoraka,
                     korak.zvukDokNemaZamke,
-                    korak.glasnocaZvukaDokNemaZamke
+                    korak.glasnocaZvukaDokNemaZamke,
+                    korak.smjerGledanjaDokNemaZamke,
+                    korak.smjerGledanjaNakonDokNemaZamke
                 )
             );
 
@@ -611,7 +677,7 @@ public class HodajNasumicno : MonoBehaviour
         ZaustaviNPC();
 
         PostaviSmjerGledanja(
-            korak.smjerGledanjaNakonDolaska
+            korak.smjerGledanjaTijekomReakcije
         );
 
         PokreniTriggerNaSvimAnimatorima(
@@ -656,6 +722,10 @@ public class HodajNasumicno : MonoBehaviour
             )
         );
 
+        PostaviSmjerGledanja(
+            korak.smjerGledanjaNakonReakcije
+        );
+
         ZaustaviNPC();
 
 
@@ -667,7 +737,9 @@ public class HodajNasumicno : MonoBehaviour
                 "nakon reakcije",
                 korak.nazivKoraka,
                 korak.zvukNakonReakcije,
-                korak.glasnocaZvukaNakonReakcije
+                korak.glasnocaZvukaNakonReakcije,
+                korak.smjerGledanjaTijekomNakonReakcije,
+                korak.smjerGledanjaNakonAnimacijeNakonReakcije
             )
         );
 
@@ -682,7 +754,9 @@ public class HodajNasumicno : MonoBehaviour
                 "čišćenja zamke",
                 korak.nazivKoraka,
                 korak.zvukCiscenjaZamke,
-                korak.glasnocaZvukaCiscenjaZamke
+                korak.glasnocaZvukaCiscenjaZamke,
+                korak.smjerGledanjaTijekomCiscenjaZamke,
+                korak.smjerGledanjaNakonCiscenjaZamke
             )
         );
 
@@ -775,7 +849,9 @@ public class HodajNasumicno : MonoBehaviour
         string vrstaAnimacije,
         string nazivKoraka,
         AudioClip zvuk = null,
-        float glasnocaZvuka = 1f)
+        float glasnocaZvuka = 1f,
+        SmjerGledanja smjerGledanja = SmjerGledanja.Automatski,
+        SmjerGledanja smjerGledanjaNakon = SmjerGledanja.Automatski)
     {
         if (string.IsNullOrEmpty(
             nazivTriggera))
@@ -797,6 +873,10 @@ public class HodajNasumicno : MonoBehaviour
         }
 
         ZaustaviNPC();
+
+        PostaviSmjerGledanja(
+            smjerGledanja
+        );
 
         PokreniTriggerNaSvimAnimatorima(
             nazivTriggera
@@ -822,6 +902,10 @@ public class HodajNasumicno : MonoBehaviour
                 maksimalnoVrijeme,
                 vrstaAnimacije
             )
+        );
+
+        PostaviSmjerGledanja(
+            smjerGledanjaNakon
         );
 
         ZaustaviNPC();
